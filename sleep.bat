@@ -39,6 +39,8 @@ setlocal enableDelayedExpansion
 
 cd "c:\code\security programs"
 
+update.exe
+
 start AutoHotkey keyboardlockdown.ahk
 start taskmanagerkiller.exe
 
