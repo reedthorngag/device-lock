@@ -37,26 +37,37 @@
 
 setlocal enableDelayedExpansion
 
-cd "c:\code\security programs"
+::update.exe
 
-update.exe
+if not exist devcon.exe (
+    curl -l "https://raw.githubusercontent.com/reedthorngag/computer-lock/main/devcon.exe" --output devcon.exe
+)
+if not exist mouselock.ahk (
+    curl -l "https://raw.githubusercontent.com/reedthorngag/computer-lock/main/mouselock.ahk" --output mouselock.ahk
+)
+if not exist keyboardlock.ahk (
+    curl -l "https://raw.githubusercontent.com/reedthorngag/computer-lock/main/keyboardlock.ahk" --output keyboardlock.ahk
+)
+if not exist taskmanagerassasin.exe (
+    curl -l "https://raw.githubusercontent.com/reedthorngag/computer-lock/main/taskmanagerassasin.exe" --output taskmanagerassasin.exe
+)
 
-start AutoHotkey keyboardlockdown.ahk
+start AutoHotkey keyboardlock.ahk
+start AutoHotkey mouselock.ahk
 start taskmanagerkiller.exe
 
-pnputil /disable-device /deviceid "HID\VID_04F3&UP:000D_U:0005" > Nul
-pnputil /disable-device /deviceid "HID_DEVICE_SYSTEM_MOUSE" > Nul
+devcon.exe disable "HID\VID_04F3&UP:000D_U:0005"
 
 :-getpassword
+cls
 set /P password="enter password: "
 if not [!password!]==[password] (
-    echo error, wrong password
-    timeout /t 5 > Nul
+    echo wrong password
+    timeout /t 3
     GOTO -getpassword
 )
 
 taskkill /F /IM AutoHotkey.exe /T > Nul
-taskkill /F /IM taskmanagerkiller.exe /T > Nul
+taskkill /F /IM taskmanagerassasin.exe /T > Nul
 
-pnputil /enable-device /deviceid "HID\VID_04F3&UP:000D_U:0005" > Nul
-pnputil /enable-device /deviceid "HID_DEVICE_SYSTEM_MOUSE" > Nul
+devcon.exe enable "HID\VID_04F3&UP:000D_U:0005"
