@@ -34,6 +34,8 @@ LControl::
 LAlt::
 LWin::
 Tab::
+LShift::
+RShift::
 RControl::
 RAlt::
 RWin::Return
