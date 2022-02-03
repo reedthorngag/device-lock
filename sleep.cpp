@@ -44,7 +44,7 @@ int main(int argc,char *argv[]) {
         _exit(0);
     }
 
-    list<string> const files = {"devcon.exe","mouselock.ahk","keyboardlock.ahk","taskmanagerassasin.exe","nircmd.exe"};
+    list<string> const files = {"devcon.exe","mouselock.ahk","keyboardlock.ahk","taskmanagerassasin.exe","nircmd.exe","hard-reset.bat"};
     struct stat buffer;
     for (list<string>::const_iterator i = files.begin(); i != files.end(); ++i) {
         if (!(stat (i->c_str(), &buffer) == 0)) {
@@ -52,21 +52,46 @@ int main(int argc,char *argv[]) {
         }
     }
 
-    ifstream in("password.txt");
-    string contents((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
-    
+    BOOL update_password = false;
+    fstream file;
+    string password;
+    file.open(L"password.txt",ios::in);
+    if (file.is_open()) {
+        getline(file,password);
+        file.close();
+        if (password=="") {
+            cout << "no password in file, what password do you want? (remember it is stored as plain text): " << flush;
+            cin >> password;
+            file.open(L"password.txt",ios::out);
+            file << password << flush;
+            file.close();
+        }
+    } else {
+        ofstream {L"password.txt"};
+        cout << "what password do you want? (remember it is stored as plain text): " << flush;
+        cin >> password;
+        file.open(L"password.txt",ios::out);
+        file << password << flush;
+        file.close();
+    }
 
-    system("start AutoHotkey keyboardlock.ahk > Nul");
     system("start AutoHotkey mouselock.ahk > Nul");
+    system("start AutoHotkey keyboardlock.ahk > Nul");
     system("start /b taskmanagerassasin.exe > Nul");
     system("devcon disable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
     system("nircmd win hide class Shell_TrayWnd");
+    system(ws2cc(L"schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul"));
+    system(ws2cc(L"schtasks /Create /TN \"DeviceLockHardReset\" /SC ONLOGON /TR \""+s2ws(argv[0])+L"hard-reset.bat\" /RL HIGHEST"));
+
+    system("echo (new ActiveXObject(\"WScript.Shell\")).AppActivate(\"sleep.exe\"); > focus.js");
+    system("cscript //nologo focus.js");
+    system("del focus.js");
 
     system("cls");
     string password_input;
     cout << "enter password: " << flush;
     cin >> password_input;
-    while (password_input!="hello") {
+    while (password_input!=password) {
         system("cls");
         cout << "wrong password!" << endl;
         Sleep(3000);
@@ -79,5 +104,6 @@ int main(int argc,char *argv[]) {
     system("taskkill /F /IM taskmanagerassasin.exe /T > Nul");
     system("devcon enable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
     system("nircmd win show class Shell_TrayWnd");
+    system(ws2cc(L"schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul"));
 
 }
