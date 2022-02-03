@@ -33,7 +33,9 @@ int main(int argc,char *argv[]) {
         _exit(0);
     }
 
-    list<string> const files = {"devcon.exe","mouselock.ahk","keyboardlock.ahk","taskmanagerassasin.exe","nircmd.exe","hard-reset.bat"};
+    system("if not exist bin\\ mkdir bin");
+
+    list<string> const files = {"bin\\devcon.exe","bin\\mouselock.ahk","bin\\keyboardlock.ahk","bin\\taskmanagerassasin.exe","bin\\nircmd.exe","bin\\hard-reset.bat"};
     struct stat buffer;
     for (list<string>::const_iterator i = files.begin(); i != files.end(); ++i) {
         if (!(stat (i->c_str(), &buffer) == 0)) {
@@ -44,14 +46,14 @@ int main(int argc,char *argv[]) {
     BOOL update_password = false;
     fstream file;
     string password;
-    file.open(L"password.txt",ios::in);
+    file.open(L"bin\\password.txt",ios::in);
     if (file.is_open()) {
         getline(file,password);
         file.close();
         if (password=="") {
             cout << "no password in file, what password do you want? (remember it is stored as plain text): " << flush;
             cin >> password;
-            file.open(L"password.txt",ios::out);
+            file.open(L"bin\\password.txt",ios::out);
             file << password << flush;
             file.close();
         }
