@@ -26,17 +26,6 @@ const char* ws2s(wstring s) {
     return buffer;
 }
 
-const char* ws2cc(wstring s) {
-    const wchar_t *input = s.c_str();
-
-    size_t size = (wcslen(input) + 1) * sizeof(wchar_t);
-    char *buffer = new char[size];
-
-    wcstombs(buffer, input, size);
-
-    return buffer;
-}
-
 int main(int argc,char *argv[]) {
 
     if (system("net session 2> Nul 1> Nul")!=0) {
@@ -75,13 +64,16 @@ int main(int argc,char *argv[]) {
         file.close();
     }
 
+    TCHAR path[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH, path);
+
     system("start AutoHotkey mouselock.ahk > Nul");
     system("start AutoHotkey keyboardlock.ahk > Nul");
     system("start /b taskmanagerassasin.exe > Nul");
     system("devcon disable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
     system("nircmd win hide class Shell_TrayWnd");
-    system(ws2cc(L"schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul"));
-    system(ws2cc(L"schtasks /Create /TN \"DeviceLockHardReset\" /SC ONLOGON /TR \""+s2ws(argv[0])+L"hard-reset.bat\" /RL HIGHEST"));
+    system("schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul");
+    system(ws2s(L"schtasks /Create /TN \"DeviceLockHardReset\" /SC ONLOGON /TR \""+s2ws(path)+L"\\hard-reset.bat\" /RL HIGHEST"));
 
     system("echo (new ActiveXObject(\"WScript.Shell\")).AppActivate(\"sleep.exe\"); > focus.js");
     system("cscript //nologo focus.js");
@@ -104,6 +96,6 @@ int main(int argc,char *argv[]) {
     system("taskkill /F /IM taskmanagerassasin.exe /T > Nul");
     system("devcon enable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
     system("nircmd win show class Shell_TrayWnd");
-    system(ws2cc(L"schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul"));
+    system("schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul");
 
 }
