@@ -4,7 +4,7 @@
 #include <strsafe.h>
 #include <string>
 #include <list>
-#include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -40,7 +40,7 @@ const char* ws2cc(wstring s) {
 int main(int argc,char *argv[]) {
 
     if (system("net session 2> Nul 1> Nul")!=0) {
-        system(ws2s(L"start /b cmd.exe /r \"ping 0.0.0.0 -n 1 -w 1000 > Nul & powershell start -verb runas '"+s2ws(argv[0])+L"' > Nul\""));
+        system(ws2s(L"start /b cmd.exe /r \"ping 0.0.0.0 -n 1 -w 100 > Nul & powershell start -verb runas '"+s2ws(argv[0])+L"' > Nul\""));
         _exit(0);
     }
 
@@ -51,6 +51,10 @@ int main(int argc,char *argv[]) {
             system(ws2s(L"curl -l \"https://raw.githubusercontent.com/reedthorngag/device-lock/main/" + s2ws(i->c_str()) + L"\" --output " + s2ws(i->c_str())));
         }
     }
+
+    ifstream in("password.txt");
+    string contents((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
+    
 
     system("start AutoHotkey keyboardlock.ahk > Nul");
     system("start AutoHotkey mouselock.ahk > Nul");
