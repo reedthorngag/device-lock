@@ -72,6 +72,7 @@ int main(int argc,char *argv[]) {
     system("start AutoHotkey bin\\keyboardlock.ahk > Nul");
     system("start /b bin\\taskmanagerassasin.exe > Nul");
     system("devcon disable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
+    system("devcon disable \"HID\\VID_258A&UP:0001_U:0002\" > Nul");
     system("nircmd win hide class Shell_TrayWnd");
     system("schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul");
     system(ws2c(L"schtasks /Create /TN \"DeviceLockHardReset\" /SC ONLOGON /TR \""+wstring(path)+L"\\hard-reset.bat\" /RL HIGHEST"));
@@ -96,6 +97,7 @@ int main(int argc,char *argv[]) {
     system("taskkill /F /IM AutoHotkey.exe /T > Nul");
     system("taskkill /F /IM taskmanagerassasin.exe /T > Nul");
     system("devcon enable \"HID\\VID_04F3&UP:000D_U:0005\" > Nul");
+    system("devcon enable \"HID\VID_258A&UP:0001_U:0002\" > Nul");
     system("nircmd win show class Shell_TrayWnd");
     system("schtasks /delete /TN \"DeviceLockHardReset\" /F > Nul");
     return 0;
